@@ -1,28 +1,32 @@
 #! ~/bin/zsh
 
-# -o -d destination -p passwords
+# DEFAULT VALUES FOR SCRIPT ARGUMENTS
+OVERWRITE=0
+DESTINATION="./default"
+PASSWORDS=()
+
 for arg in $@
 do
     if [[ $1 = "-o" ]] # OVERWRITE FLAG
     then
-        echo "Overwrite double files"
+        OVERWRITE=1
         shift
     fi
 
     if [[ $1 = "-d" ]] # NON-DEFAULT LOCATION
     then
         shift
-        echo "Not the default location, destination  = $1"
-        destination=$1
+        DESTINATION=$1
         shift
     fi
 
     if [[ $1 = "-p" ]] # PASSWORD ARRAYS
     then
         shift
-        for i in $@
-        do
-            echo "pass: $i"
-        done
+        PASSWORDS=$@
     fi
 done
+
+echo "O: $OVERWRITE"
+echo "D: $DESTINATION"
+echo "P: $PASSWORDS"
