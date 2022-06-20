@@ -1,10 +1,12 @@
-#! ~/bin/zsh
+#!/bin/bash
 
 # DEFAULT VALUES FOR SCRIPT ARGUMENTS
+TARGET_PATH=$(pwd)
 OVERWRITE=0
-DESTINATION="./default"
-PASSWORDS=()
+DESTINATION=$(pwd)
+PASSWORDS="empty"
 
+# ARGS HANDLING
 for arg in $@
 do
     if [[ $1 = "-o" ]] # OVERWRITE FLAG
@@ -27,6 +29,20 @@ do
     fi
 done
 
-echo "O: $OVERWRITE"
-echo "D: $DESTINATION"
-echo "P: $PASSWORDS"
+# NAVIGATING TO DESTINATION DIRECTORY
+# cd "$DESTINATION"
+# mkdir "archive"
+
+# MAKING DIRECTORY BASED ON UNIQUE MOD DATE AND MOVING FILES
+find . -type f | while read file
+do
+    if [[ $file = "./test.sh" ]]
+    then
+            continue
+    fi
+    
+    DATE=$(date -r "$file" "+%y-%m-%d") # GET DATE FORMAT
+    DEST="./$DATE" # MAKE DESTINATION
+    mkdir -p "$DEST" # MAKE DIR
+    mv "$file" "$DEST" # MOVING FILES
+done
