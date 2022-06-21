@@ -3,7 +3,7 @@
 # DEFAULT VALUES FOR SCRIPT ARGUMENTS
 TARGET_PATH=$(pwd)
 OVERWRITE=0
-DESTINATION=$(pwd)
+DESTINPUT="$(pwd)/archive"
 PASSWORDS="empty"
 
 # ARGS HANDLING
@@ -18,7 +18,7 @@ do
     if [[ $1 = "-d" ]] # NON-DEFAULT LOCATION
     then
         shift
-        DESTINATION=$1
+        DESTINPUT=$1
         shift
     fi
 
@@ -29,20 +29,37 @@ do
     fi
 done
 
-# NAVIGATING TO DESTINATION DIRECTORY
-# cd "$DESTINATION"
-# mkdir "archive"
+# UNZIPPING .ZIP FILES
+PASS=(man mies)
+FILE=programs
+CRYPTED=$( 7z l -slt -- $file | grep -i -c "Encrypted = +" )
+if [ "$CRYPTED" -eq "1" ]; then
+    for i in "${PASS[@]}"; do
+        unzip $file -P $i
+    done
+fi
+
+# LISTING COUNT OF FILE EXTENSIONS
+echo $(find . -type f | grep -i -E -o "\.\w*$" | sort | uniq -c)
+
+# MAKING ARCHIVE DIR IF DESINATION IS DEFAULT
+if [[ $DESTINPUT = "$(pwd)/archive"  ]]
+then
+    mkdir -p  archive
+fi
 
 # MAKING DIRECTORY BASED ON UNIQUE MOD DATE AND MOVING FILES
 find . -type f | while read file
 do
-    if [[ $file = "./test.sh" ]]
+    if [[ $file = "./script.sh" ]]
     then
             continue
     fi
-    
+   
     DATE=$(date -r "$file" "+%y-%m-%d") # GET DATE FORMAT
-    DEST="./$DATE" # MAKE DESTINATION
+    DEST="$DESTINPUT/$DATE" # MAKE DESTINATION
     mkdir -p "$DEST" # MAKE DIR
-    mv "$file" "$DEST" # MOVING FILES
+    # mv "$file" "$DEST" # MOVING FILES
 done
+
+
