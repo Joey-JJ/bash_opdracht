@@ -30,14 +30,18 @@ do
 done
 
 # UNZIPPING .ZIP FILES
-PASS=(man mies)
-FILE=programs
-CRYPTED=$( 7z l -slt -- $file | grep -i -c "Encrypted = +" )
-if [ "$CRYPTED" -eq "1" ]; then
-    for i in "${PASS[@]}"; do
-        unzip $file -P $i
-    done
-fi
+varname=$(find -name "*.zip")
+for file in $varname
+do
+    CRYPTED=$( 7z l -slt -- $file | grep -i -c "Encrypted = +" )
+    if [ "$CRYPTED" -eq "1" ]; then
+        for i in "${PASSWORDS[@]}"; do
+            unzip $file -P $i
+        done
+    else
+    unzip $file
+    fi
+done
 
 # LISTING COUNT OF FILE EXTENSIONS
 echo $(find . -type f | grep -i -E -o "\.\w*$" | sort | uniq -c)
