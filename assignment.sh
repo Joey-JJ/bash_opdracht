@@ -34,15 +34,25 @@ while true
 do
     ZIPFILES=$(find . -iname \*.zip)
     if [ -z $ZIPFILES ]; then
-	break
+        break
     fi
 
     for i in $ZIPFILES
     do
-        unzip "${i:2}"
-	rm $i
+        if 7z l -slt $i | grep -q ZipCrypto; then
+            # ENCRYPTED
+            for pass in $PASSWORDS
+            do
+                unzip -P $pass "${i:2}" && rm $i && break
+            done
+        else
+	    # NOT ENCRYPTED
+            unzip "${i:2}"
+            rm $i
+        fi
     done
 done
+
 
 
 
