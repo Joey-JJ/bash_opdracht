@@ -30,16 +30,16 @@ do
 done
 
 # UNZIPPING .ZIP FILES
-varname=$(find -name "*.zip")
-for file in $varname
+Zips=$(find -name "*.zip")
+for zipfile in $Zips
 do
-    CRYPTED=$( 7z l -slt -- $file | grep -i -c "Encrypted = +" )
+    CRYPTED=$( 7z l -slt -- $zipfile | grep -i -c "Encrypted = +" )
     if [ "$CRYPTED" -eq "1" ]; then
         for i in "${PASSWORDS[@]}"; do
-            unzip $file -P $i
+            unzip $zipfile -P $i
         done
     else
-    unzip $file
+    unzip $zipfile
     fi
 done
 
