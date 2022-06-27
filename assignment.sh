@@ -1,8 +1,10 @@
 #!/bin/bash
 
+
 # DEFAULT VALUES FOR SCRIPT ARGUMENTS
 OVERWRITE=0
 DESTINPUT="$(pwd)/archive"
+
 
 # ARGS HANDLING
 for arg in $@
