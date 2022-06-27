@@ -22,7 +22,7 @@ do
             if [[ $i -eq "-o" ]]
             then
                 echo "Wrong order of arguments. Terminating the script."
-                exit 0
+                exit 1
             fi
         done
 
@@ -33,18 +33,22 @@ do
     if [[ $1 = "-p" ]] # PASSWORD ARRAYS
     then
         shift
+        if [ $# -eq 0 ]; then
+        echo "No passwords were passed in. Exiting the script."
+        exit 1
+        fi
         for i in $@; do
-            if [[ $i -eq "-d" || $i -eq "-o" ]]
+            if [[ $i = "-d" || $i = "-o" ]]
             then
                 echo "Wrong order of arguments. Terminating the script."
-                exit 0
+                exit 1
             fi
         done
 
         PASSWORDS=$@
     fi
 done
-
+exit 0
 
 # UNZIPPING .ZIP FILES
 while true
