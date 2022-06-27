@@ -1,12 +1,6 @@
 #!/bin/bash
 
-# CREATING ERROR LOG FILE
-logfile="./Log.txt"
->$logfile
-{
-
 # DEFAULT VALUES FOR SCRIPT ARGUMENTS
-TARGET_PATH=$(pwd)
 OVERWRITE=0
 DESTINPUT="$(pwd)/archive"
 
@@ -22,6 +16,14 @@ do
     if [[ $1 = "-d" ]] # NON-DEFAULT LOCATION
     then
         shift
+        for i in $@; do  # HANDLING WRONG ORDER OF SCRIPT ARGS
+            if [[ $i -eq "-o" ]]
+            then
+                echo "Wrong order of arguments. Terminating the script."
+                exit 0
+            fi
+        done
+
         DESTINPUT=$1
         shift
     fi
@@ -29,9 +31,18 @@ do
     if [[ $1 = "-p" ]] # PASSWORD ARRAYS
     then
         shift
+        for i in $@; do  c
+            if [[ $i -eq "-d" || $i -eq "-o" ]]
+            then
+                echo "Wrong order of arguments. Terminating the script."
+                exit 0
+            fi
+        done
+
         PASSWORDS=$@
     fi
 done
+
 
 # UNZIPPING .ZIP FILES
 while true
@@ -60,11 +71,18 @@ done
 echo "FILE EXTENSIONS"
 echo $(find . -type f | grep -i -E -o "\.\w*$" | sort | uniq -c)
 
+
+# CREATING ERROR LOG FILE
+logfile="./Log.txt"
+>$logfile
+{
+
 # MAKING ARCHIVE DIR IF DESINATION IS DEFAULT
 if [[ $DESTINPUT = "$(pwd)/archive"  ]]
 then
 	mkdir -p  archive
 fi
+
 
 # MAKING DIRECTORY BASED ON UNIQUE MOD DATE AND MOVING FILES
 find . -type f | while read file
@@ -84,12 +102,13 @@ do
     fi
 done
 
+
 # LOGGING ERRORS IN LOGFILE
 } 2>> $logfile
 linecount=$(wc -l $logfile)
+
 
 # KEEPING LENGTH OF LOG FILE 10 LINES MAX
 if [[ $linecount > 10 ]]; then
     $(tail -n 10 | > $logfile)
 fi
-
