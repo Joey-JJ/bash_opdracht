@@ -51,21 +51,33 @@ while true
 do
     ZIPFILES=$(find . -iname \*.zip)
     if [ -z $ZIPFILES ]; then
-	break
+        break
     fi
 
     for i in $ZIPFILES
     do
+    TRIES=0
 	if 7z l -slt $i | grep -q ZipCrypto; then
 	    for pass in $PASSWORDS
 	    do
 		unzip -P $pass "${i:2}" && rm $i && break
+		zipworked=$?
 	    done
 	else
 	    unzip "${i:2}"
+	    zipworked=$?
 	    rm $i
 	fi
+	if [ $zipworked -gt 0 ]; then
+	((TRIES=TRIES+1))
+
+	fi
     done
+    if [ $TRIES -ge ${#PASSWORDS[@]} ]
+        then
+            echo "INCORRECT PASSWORD(S), EXITING THE SCRIPT"
+            exit 1
+        fi
 done
 
 
