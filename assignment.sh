@@ -19,14 +19,18 @@ do
     then
         shift
         for i in $@; do  # HANDLING WRONG ORDER OF SCRIPT ARGS
-            if [[ $i -eq "-o" ]]
+            if [[ $i = "-o" ]]
             then
                 echo "Wrong order of arguments. Terminating the script."
                 exit 1
             fi
         done
-
-        DESTINPUT=$1
+        if [[ -d $1 ]]; then
+            DESTINPUT=$1
+        else
+            echo "Invalid location. Terminating the script."
+            exit 1
+        fi
         shift
     fi
 
@@ -48,7 +52,7 @@ do
         PASSWORDS=$@
     fi
 done
-exit 0
+
 
 # UNZIPPING .ZIP FILES
 while true
