@@ -33,7 +33,7 @@ do
     if [[ $1 = "-p" ]] # PASSWORD ARRAYS
     then
         shift
-        for i in $@; do  c
+        for i in $@; do
             if [[ $i -eq "-d" || $i -eq "-o" ]]
             then
                 echo "Wrong order of arguments. Terminating the script."
